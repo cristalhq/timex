@@ -10,7 +10,12 @@ type Clock interface {
 	Now() time.Time
 }
 
-var realClock = &systemClock{}
+var (
+	realClock = &systemClock{}
+
+	_ Clock = realClock
+	_ Clock = &ManualClock{}
+)
 
 type systemClock struct{}
 
