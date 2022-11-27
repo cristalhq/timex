@@ -11,9 +11,11 @@ type Clock interface {
 }
 
 var (
-	realClock = &systemClock{}
+	RealClock    = &systemClock{}
+	RealUTCClock = &systemUTCClock{}
 
-	_ Clock = realClock
+	_ Clock = RealClock
+	_ Clock = RealUTCClock
 	_ Clock = &ManualClock{}
 )
 
@@ -21,10 +23,9 @@ type systemClock struct{}
 
 func (c *systemClock) Now() time.Time { return time.Now() }
 
-// NewRealClock returns real/system Clock.
-func NewRealClock() Clock {
-	return realClock
-}
+type systemUTCClock struct{}
+
+func (c *systemUTCClock) Now() time.Time { return time.Now().UTC() }
 
 // ManualClock represents clock than can be controlled manually.
 type ManualClock struct {
