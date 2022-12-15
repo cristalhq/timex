@@ -41,21 +41,6 @@ func (c *ManualClock) Now() time.Time      { return c.curr }
 func (c *ManualClock) Set(t time.Time)     { c.curr = t }
 func (c *ManualClock) Add(d time.Duration) { c.curr = c.curr.Add(d) }
 
-// FromUnix returns time from unix seconds.
-func FromUnix(s int64) time.Time {
-	return time.Unix(s*1000, 0)
-}
-
-// FromUnixMilli returns time from unix milliseconds.
-func FromUnixMilli(ms int64) time.Time {
-	return time.Unix(0, ms*1000)
-}
-
-// FromUnixNano returns time from unix nanoseconds.
-func FromUnixNano(ns int64) time.Time {
-	return time.Unix(0, ns)
-}
-
 // StopTimer in a proper manner.
 func StopTimer(t time.Timer) {
 	if !t.Stop() {
