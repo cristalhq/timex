@@ -65,3 +65,8 @@ func StopTimer(t time.Timer) {
 		}
 	}
 }
+
+// MulDur multiplies duration by a float value.
+func MulDur(d time.Duration, scale float64) time.Duration {
+	return time.Duration(float64(d) * scale)
+}
