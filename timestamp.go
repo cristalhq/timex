@@ -2,6 +2,7 @@ package timex
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
 	"time"
 )
@@ -36,7 +37,18 @@ func (ts Timestamp) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements json.Unmarshaler interface.
 func (ts *Timestamp) UnmarshalJSON(b []byte) error {
-	msec, err := strconv.ParseInt(string(b), 10, 64)
+	if len(b) == 0 {
+		return errEmptyInput
+	}
+
+	var s string
+	if b[0] == '"' && b[len(b)-1] == '"' {
+		s = string(b[1 : len(b)-1])
+	} else {
+		s = string(b)
+	}
+
+	msec, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		return err
 	}
@@ -44,3 +56,5 @@ func (ts *Timestamp) UnmarshalJSON(b []byte) error {
 	*ts = AsTimestamp(time.UnixMilli(msec))
 	return nil
 }
+
+var errEmptyInput = errors.New("empty timestamp")
