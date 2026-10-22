@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+// Zone is an alias for [time.Location].
+type Zone = time.Location
+
 // Dur is an alias for [time.Duration].
 type Dur = time.Duration
 
@@ -33,13 +36,19 @@ func Compare(a, b time.Time) int {
 // Parse value using the first matching layout.
 // At least one layout is required.
 func Parse(value string, layouts ...string) (time.Time, error) {
+	return ParseInZone(time.UTC, value, layouts...)
+}
+
+// ParseInZone value using the first matching layout.
+// At least one layout is required.
+func ParseInZone(zone *Zone, value string, layouts ...string) (time.Time, error) {
 	if len(layouts) == 0 {
 		return time.Time{}, errors.New("timex: no layouts provided")
 	}
 
 	var firstErr error
 	for _, layout := range layouts {
-		t, err := time.Parse(layout, value)
+		t, err := time.ParseInLocation(layout, value, zone)
 		if err == nil {
 			return t, nil
 		}
@@ -92,4 +101,12 @@ func DropTime(t time.Time) time.Time {
 		0, 0, 0, 0,
 		t.Location(),
 	)
+}
+
+func MustZone(zone string) *Zone {
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		panic(err)
+	}
+	return loc
 }
